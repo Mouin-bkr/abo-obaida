@@ -456,18 +456,6 @@ def load_data():
 
 videos, sentiments_df, stats = load_data()
 
-# Hero Section
-st.markdown('<h1 class="hero-title">�🇸 The Voice of Truth: Abu Obeida\'s Digital Impact</h1>', unsafe_allow_html=True)
-
-st.markdown("""
-<div class="intro-text">
-<p><strong>In the digital age where information flows at the speed of light, few voices have commanded attention quite like that of Abu Obeida, the masked spokesman of Hamas's Al-Qassam Brigades.</strong> With unwavering composure and measured words, Abu Obeida has transcended traditional warfare communication to become a global phenomenon—his speeches garnering millions of views worldwide and resonating as an unfiltered voice of truth amidst the chaos. From Gaza's streets to living rooms across continents, his messages inspire expressions of admiration, solidarity, and hope in Arabic, English, French, Turkish, and Spanish. This dashboard presents a data-driven exploration of how a masked spokesman became an internet icon, proving that authenticity and conviction can cut through the noise to touch hearts globally.</p>
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("---")
-
-# Hero Section - Bilingual
 st.markdown("""
 <div class="bilingual-title">
     🇵🇸 The Voice of Truth / صوت الحق
@@ -576,7 +564,7 @@ videos_df = videos_df.sort_values('published_at')
 col_left, col_right = st.columns(2)
 
 with col_left:
-    st.subheader("📺 Views Timeline: The Voice Resonates")
+    st.markdown("### 📅 الجدول الزمني للمشاهدات: صدى الصوت يصل للآفاق")
     fig_timeline = go.Figure()
     
     fig_timeline.add_trace(go.Scatter(
@@ -608,10 +596,10 @@ with col_left:
         height=400
     )
     
-    st.plotly_chart(fig_timeline, use_container_width=True)
+    st.plotly_chart(fig_timeline, width='stretch')
 
 with col_right:
-    st.subheader("�️ The Trust Index: Measuring Credibility")
+    st.markdown("### 🛡️ مؤشر الثقة: قياس المصداقية")
     
     # Calculate engagement rates
     videos_df['engagement_rate'] = ((videos_df['like_count'] + videos_df['comment_count']) / videos_df['view_count'] * 100)
@@ -660,19 +648,15 @@ with col_right:
         showlegend=False
     )
     
-    st.plotly_chart(fig_trust, use_container_width=True)
+    st.plotly_chart(fig_trust, width='stretch')
     
-    # Analysis box
-    st.markdown(f"""
-    <div class="analysis-box">
-        <div class="analysis-text">
-            📊 The data reveals an engagement rate <span class="multiplier">{multiplier:.1f}x higher</span> than standard media outlets.
-            <br><br>
-            This indicates that viewers are not passive observers, but <strong>active supporters</strong> of the narrative.
-            The Trust Index demonstrates authentic credibility that mainstream media struggles to achieve.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.info(f"""
+**📊 تحليل البيانات:**
+تشير البيانات إلى أن معدل التفاعل أعلى بـ **{multiplier:.1f} ضعف** مقارنة بوسائل الإعلام التقليدية.
+هذا يدل على أن المشاهدين ليسوا مجرد متلقين سلبيين، بل هم داعمون نشطون للسردية. يثبت "مؤشر الثقة" وجود مصداقية حقيقية تعجز وسائل الإعلام الرئيسية عن تحقيقها.
+
+⚠️ **تنويه:** تستند هذه النتائج إلى تحليل عينة محدودة من الفيديوهات والبيانات المتاحة، ولا تغطي الأرشيف الكامل.
+""")
 
 # Engagement comparison chart
 st.markdown("""
@@ -718,7 +702,7 @@ with col_eng1:
         legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
     )
     
-    st.plotly_chart(fig_engagement, use_container_width=True)
+    st.plotly_chart(fig_engagement, width='stretch')
 
 with col_eng2:
     st.subheader("🌍 Language Distribution of Comments")
@@ -745,7 +729,7 @@ with col_eng2:
         legend=dict(font=dict(color='#FFFFFF'))
     )
     
-    st.plotly_chart(fig_lang, use_container_width=True)
+    st.plotly_chart(fig_lang, width='stretch')
 
 st.markdown("---")
 
@@ -870,12 +854,23 @@ st.markdown("""
 col_sent1, col_sent2 = st.columns(2)
 
 with col_sent1:
-    st.subheader("😊 Overall Sentiment Distribution")
+    st.header("📊 توزيع المشاعر العام")
     
     sentiment_data = pd.DataFrame({
         'Sentiment': list(stats['sentiments'].keys()),
         'Count': list(stats['sentiments'].values())
     })
+    
+    # Translate sentiment values to Arabic
+    sentiment_map = {
+        "Positive": "إيجابي (Positive)",
+        "Negative": "سلبي (Negative)",
+        "Neutral": "محايد (Neutral)",
+        "positive": "إيجابي (Positive)",
+        "negative": "سلبي (Negative)",
+        "neutral": "محايد (Neutral)"
+    }
+    sentiment_data['Sentiment'] = sentiment_data['Sentiment'].map(sentiment_map).fillna(sentiment_data['Sentiment'])
     
     fig_sentiment = go.Figure(data=[go.Bar(
         x=sentiment_data['Sentiment'],
@@ -889,18 +884,19 @@ with col_sent1:
     )])
     
     fig_sentiment.update_layout(
+        title="توزيع المشاعر",
         plot_bgcolor='#1a1a1a',
         paper_bgcolor='#1a1a1a',
         font=dict(color='#FFFFFF'),
-        xaxis=dict(title='Sentiment', gridcolor='#333333'),
-        yaxis=dict(title='Number of Comments', gridcolor='#333333', showgrid=True),
+        xaxis=dict(title='المشاعر', gridcolor='#333333'),
+        yaxis=dict(title='عدد التعليقات', gridcolor='#333333', showgrid=True),
         height=400
     )
     
-    st.plotly_chart(fig_sentiment, use_container_width=True)
+    st.plotly_chart(fig_sentiment, width='stretch')
 
 with col_sent2:
-    st.subheader("🎯 Dominant Emotional Themes")
+    st.markdown("### 🎯 السمات العاطفية السائدة")
     
     # Get top themes (excluding 'neutral')
     themes_data = {k: v for k, v in stats['themes'].items() if k != 'neutral'}
@@ -908,6 +904,34 @@ with col_sent2:
         'Theme': list(themes_data.keys())[:10],
         'Count': list(themes_data.values())[:10]
     }).sort_values('Count', ascending=True)
+    
+    # Specific mapping for the emotional themes shown in the chart
+    theme_translation = {
+        "eloquence": "فصاحة (Eloquence)",
+        "pride": "فخر (Pride)",
+        "admiration": "إعجاب (Admiration)",
+        "solidarity": "تضامن (Solidarity)",
+        "leadership": "قيادة (Leadership)",
+        "martyrdom": "شهادة (Martyrdom)",
+        "hope": "أمل (Hope)",
+        "resistance": "مقاومة (Resistance)",
+        "grief": "حزن (Grief)",
+        "justice": "عدالة (Justice)",
+        "steadfastness": "صمود (Steadfastness)",
+        "Trust": "ثقة (Trust)",
+        "Anticipation": "ترقب (Anticipation)",
+        "Anger": "غضب (Anger)",
+        "Fear": "خوف (Fear)",
+        "Sadness": "حزن (Sadness)",
+        "Joy": "فرح (Joy)",
+        "trust": "ثقة (Trust)",
+        "anticipation": "ترقب (Anticipation)",
+        "anger": "غضب (Anger)",
+        "fear": "خوف (Fear)",
+        "sadness": "حزن (Sadness)",
+        "joy": "فرح (Joy)"
+    }
+    themes_df['Theme'] = themes_df['Theme'].map(theme_translation).fillna(themes_df['Theme'])
     
     fig_themes = go.Figure(data=[go.Bar(
         y=themes_df['Theme'],
@@ -923,63 +947,35 @@ with col_sent2:
     )])
     
     fig_themes.update_layout(
+        title="السمات العاطفية",
         plot_bgcolor='#1a1a1a',
         paper_bgcolor='#1a1a1a',
         font=dict(color='#FFFFFF'),
-        xaxis=dict(title='Count', gridcolor='#333333', showgrid=True),
+        xaxis=dict(title='العدد', gridcolor='#333333', showgrid=True),
         yaxis=dict(title='', gridcolor='#333333'),
         height=400
     )
     
-    st.plotly_chart(fig_themes, use_container_width=True)
+    st.plotly_chart(fig_themes, width='stretch')
 
 st.markdown("---")
 
 # Conclusion/Takeaway Section - Spiritual Reflection
-st.markdown("""
-<div style="max-width: 1000px; margin: 50px auto; padding: 40px; background: linear-gradient(135deg, #007A3D 0%, #005a2d 100%); border-radius: 20px; border: 4px solid #CE1126; box-shadow: 0 10px 40px rgba(0, 122, 61, 0.6);" dir="rtl">
-    <h2 style="color: #FFFFFF; font-size: 2.5rem; font-weight: 900; text-align: center; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
-        🕌 رسالة وعبرة
-    </h2>
-    
-    <div style="background: rgba(0, 0, 0, 0.2); padding: 30px; border-radius: 15px; border-right: 5px solid #FFD700;">
-        <p style="color: #FFFFFF; font-size: 1.4rem; line-height: 2.4; text-align: justify; margin-bottom: 25px;">
-            خلاصة هذا الأثر الرقمي ليست في التكنولوجيا، بل في قانون رباني: <strong style="color: #FFD700; font-size: 1.5rem;">"من صدق مع الله، صدق الله معه"</strong>.
-            إذا صدقت نيتك، سخر الله لك الأسباب، وجعل من صوتك سيفاً للحق، واستخدمك لنصرة دينه ولو كنت وحدك.
-        </p>
-        
-        <h3 style="color: #FFD700; font-size: 1.8rem; font-weight: 800; text-align: center; margin: 30px 0 20px 0;">
-            ✨ رسالتنا لك
-        </h3>
-        
-        <div style="margin: 20px 0;">
-            <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0; border-right: 4px solid #CE1126;">
-                <p style="color: #FFFFFF; font-size: 1.3rem; line-height: 2;">
-                    <strong style="color: #FFD700;">⚔️ غيّر نفسك يتغير حال الأمة:</strong> النصر يبدأ من سجادة صلاتك ومن صدقك في خلواتك.
-                </p>
-            </div>
-            
-            <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0; border-right: 4px solid #CE1126;">
-                <p style="color: #FFFFFF; font-size: 1.3rem; line-height: 2;">
-                    <strong style="color: #FFD700;">🛡️ الثبات الثبات:</strong> استمر في المقاطعة، استمر في الدعاء، ولا تستصغر أثرك.
-                </p>
-            </div>
-            
-            <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0; border-right: 4px solid #CE1126;">
-                <p style="color: #FFFFFF; font-size: 1.3rem; line-height: 2;">
-                    <strong style="color: #FFD700;">⚖️ تذكر:</strong> "وكلهم آتيه يوم القيامة فرداً". ستقف وحدك، فماذا أعددت؟
-                </p>
-            </div>
-        </div>
-        
-        <div style="background: rgba(255, 215, 0, 0.15); padding: 25px; border-radius: 12px; margin-top: 30px; border: 2px solid #FFD700; text-align: center;">
-            <p style="color: #FFFFFF; font-size: 1.5rem; font-weight: 800; line-height: 2.2;">
-                كن أنت أبو عبيدة في مجالك.. بالصدق، والإتقان، واليقين بنصر الله. 🇵🇸
-            </p>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div dir="rtl" style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #007A3D 0%, #1a5c3a 100%); border-radius: 12px; margin: 20px 0;"><h2 style="color: #FFD700; font-size: 2.5em; margin-bottom: 30px; font-weight: bold;">🕌 رسالة وعبرة</h2></div>', unsafe_allow_html=True)
+
+st.markdown('<p dir="rtl" style="color: white; font-size: 1.4em; line-height: 2.4; text-align: justify; padding: 0 40px; max-width: 900px; margin: 0 auto;">خلاصة هذا الأثر الرقمي ليست في التكنولوجيا، بل في قانون رباني: <strong style="color: #FFD700; font-size: 1.5em;">"من صدق مع الله، صدق الله معه"</strong>. إذا صدقت نيتك، سخر الله لك الأسباب، وجعل من صوتك سيفاً للحق، واستخدمك لنصرة دينه ولو كنت وحدك.</p>', unsafe_allow_html=True)
+
+st.markdown('<h3 style="color: #FFD700; font-size: 1.8em; font-weight: bold; text-align: center; margin: 30px 0 20px 0;">✨ رسالتنا لك</h3>', unsafe_allow_html=True)
+
+st.markdown('<div dir="rtl" style="margin: 15px auto; padding: 20px; background: rgba(255,255,255,0.1); border-right: 4px solid #CE1126; border-radius: 10px; max-width: 900px;"><p style="color: white; font-size: 1.3em; line-height: 2;"><strong style="color: #FFD700;">⚔️ غيّر نفسك يتغير حال الأمة:</strong> النصر يبدأ من سجادة صلاتك ومن صدقك في خلواتك.</p></div>', unsafe_allow_html=True)
+
+st.markdown('<div dir="rtl" style="margin: 15px auto; padding: 20px; background: rgba(255,255,255,0.1); border-right: 4px solid #CE1126; border-radius: 10px; max-width: 900px;"><p style="color: white; font-size: 1.3em; line-height: 2;"><strong style="color: #FFD700;">🛡️ الثبات الثبات:</strong> استمر في المقاطعة، استمر في الدعاء، ولا تستصغر أثرك.</p></div>', unsafe_allow_html=True)
+
+st.markdown('<div dir="rtl" style="margin: 15px auto; padding: 20px; background: rgba(255,255,255,0.1); border-right: 4px solid #CE1126; border-radius: 10px; max-width: 900px;"><p style="color: white; font-size: 1.3em; line-height: 2;"><strong style="color: #FFD700;">⚖️ تذكر:</strong> "وكلهم آتيه يوم القيامة فرداً". ستقف وحدك، فماذا أعددت؟</p></div>', unsafe_allow_html=True)
+
+st.markdown('<div dir="rtl" style="margin: 30px auto; padding: 25px; background: rgba(255,215,0,0.15); border: 2px solid #FFD700; border-radius: 12px; text-align: center; max-width: 900px;"><p style="color: white; font-size: 1.5em; font-weight: bold; line-height: 2.2;">كن أنت أبو عبيدة في مجالك.. بالصدق، والإتقان، واليقين بنصر الله. 🇵🇸</p></div>', unsafe_allow_html=True)
+
+st.markdown("---")
 
 # Footer
 st.markdown("---")
