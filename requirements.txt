@@ -2,7 +2,7 @@
 # Python Dependencies for PySpark Analytics Pipeline
 
 # Core Processing
-pyspark>=3.5.0              # Distributed data processing on Hadoop/Spark
+pyspark==3.4.1              # Distributed data processing on Hadoop/Spark (stable version)
 pandas>=1.5.0               # Data manipulation and analysis
 pyarrow>=10.0.0             # Parquet file support for Spark
 

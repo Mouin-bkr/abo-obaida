@@ -51,54 +51,20 @@ def collect_videos(query, max_results=200):
 # ============================================
 # ORIGINAL EXAM QUERIES (COMMENTED OUT)
 # ============================================
-# queries = [
-#     # English
-#     "Gaza war", "Palestine Israel", "Gaza Palestine", "Israel Hamas",
+queries = [
+#     English
+     "Gaza war", "Palestine Israel", "Gaza Palestine", "Israel Hamas",
 #     # Arabic
-#     "غزة", "فلسطين إسرائيل", "حرب غزة", "القدس فلسطين",
+     "غزة", "فلسطين إسرائيل", "حرب غزة", "القدس فلسطين",
 #     # Spanish
-#     "guerra de Gaza", "Palestina Israel", "conflicto Gaza", "Palestina"
-# ]
+     "guerra de Gaza", "Palestina Israel", "conflicto Gaza", "Palestina"
+ ]
 
 # ============================================
 # ABU OBEIDA ANALYSIS - Multi-language Queries
 # Focus: Global perspectives on Abu Obeida (Palestinian spokesperson)
 # ============================================
-queries = [
-    # English - Western perspective
-    "Abu Obeida Hamas spokesman",
-    "Abu Obeida spokesperson",
-    "Abu Obeida Palestinian resistance",
-    "Abu Obeida speech",
-    
-    # Arabic - Middle East & North Africa perspective
-    "أبو عبيدة",
-    "أبو عبيدة المتحدث",
-    "أبو عبيدة القسام",
-    "خطاب أبو عبيدة",
-    "كلمة أبو عبيدة",
-    
-    # French - French-speaking world perspective
-    "Abu Obeida porte-parole",
-    "Abu Obeida Palestine",
-    "discours Abu Obeida",
-    
-    # Spanish - Latin America & Spain perspective
-    "Abu Obeida portavoz",
-    "Abu Obeida Palestina",
-    "discurso Abu Obeida",
-    
-    # Turkish - Turkish perspective
-    "Ebu Ubeyde sözcü",
-    "Ebu Ubeyde Filistin",
-    
-    # Urdu/Hindi transliteration - South Asian perspective
-    "Abu Obeida Pakistan",
-    "Abu Obeida tribute",
-    
-    # Indonesian/Malay - Southeast Asian perspective
-    "Abu Obeida juru bicara",
-]
+
 
 all_videos = []
 
