@@ -1,0 +1,13 @@
+=== Testing HDFS Operations ===
+1. Creating test directory...
+docker exec namenode hdfs dfs -mkdir -p /tmp/test
+2. Writing test file...
+docker exec namenode bash -c 'echo "hello from Gaza YouTube Analytics cluster" > /tmp/hello.txt'
+docker exec namenode hdfs dfs -put -f /tmp/hello.txt /tmp/test/
+3. Reading test file...
+docker exec namenode hdfs dfs -cat /tmp/test/hello.txt
+hello from Gaza YouTube Analytics cluster
+4. Listing HDFS contents...
+docker exec namenode hdfs dfs -ls -R /tmp/test
+-rw-r--r--   1 root supergroup         42 2026-01-16 20:53 /tmp/test/hello.txt
+✅ HDFS test complete!

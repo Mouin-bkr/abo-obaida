@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   namenode:
     image: razer99/hadoop-cluster-mouin-boubakri:latest
@@ -9,40 +7,25 @@ services:
       - HADOOP_ROLE=namenode
       - CLUSTER_NAME=gaza-youtube-analytics
     ports:
-      - "9870:9870"   # NameNode Web UI
-      - "9000:9000"   # HDFS IPC
-      - "8088:8088"   # ResourceManager Web UI
+      - "9870:9870"
+      - "9000:9000"
+      - "8088:8088"
     volumes:
       - namenode_data:/hadoop/dfs/name
-      - ./hadoop-configs:/opt/hadoop/etc/hadoop
-      - ./start-hadoop.sh:/start-hadoop.sh
-      - ./pyspark_gaza.py:/opt/pyspark_gaza.py
+      - ./hadoop-configs/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml:ro
+      - ./hadoop-configs/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./hadoop-configs/mapred-site.xml:/usr/local/hadoop/etc/hadoop/mapred-site.xml:ro
+      - ./hadoop-configs/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml:ro
+      - ./start-hadoop.sh:/start-hadoop.sh:ro
+      - ./pyspark_gaza.py:/opt/pyspark_gaza.py:ro
     networks:
       - hadoop-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9870"]
+      test: ["CMD", "bash", "-c", "jps | grep -q NameNode"]
       interval: 30s
       timeout: 10s
-      retries: 3
-    command: ["/bin/bash", "/start-hadoop.sh"]
-
-  secondarynamenode:
-    image: razer99/hadoop-cluster-mouin-boubakri:latest
-    container_name: secondarynamenode
-    hostname: secondarynamenode
-    environment:
-      - HADOOP_ROLE=secondarynamenode
-      - CLUSTER_NAME=gaza-youtube-analytics
-    ports:
-      - "9868:9868"   # Secondary NameNode Web UI
-    volumes:
-      - secondarynamenode_data:/hadoop/dfs/namesecondary
-      - ./hadoop-configs:/opt/hadoop/etc/hadoop
-      - ./start-hadoop.sh:/start-hadoop.sh
-    networks:
-      - hadoop-network
-    depends_on:
-      - namenode
+      retries: 5
+      start_period: 60s
     command: ["/bin/bash", "/start-hadoop.sh"]
 
   datanode1:
@@ -53,15 +36,25 @@ services:
       - HADOOP_ROLE=datanode
       - CLUSTER_NAME=gaza-youtube-analytics
     ports:
-      - "9864:9864"   # DataNode Web UI
+      - "9864:9864"
     volumes:
       - datanode1_data:/hadoop/dfs/data
-      - ./hadoop-configs:/opt/hadoop/etc/hadoop
-      - ./start-hadoop.sh:/start-hadoop.sh
+      - ./hadoop-configs/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml:ro
+      - ./hadoop-configs/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./hadoop-configs/mapred-site.xml:/usr/local/hadoop/etc/hadoop/mapred-site.xml:ro
+      - ./hadoop-configs/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml:ro
+      - ./start-hadoop.sh:/start-hadoop.sh:ro
     networks:
       - hadoop-network
     depends_on:
-      - namenode
+      namenode:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "jps | grep -q DataNode"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
     command: ["/bin/bash", "/start-hadoop.sh"]
 
   datanode2:
@@ -72,15 +65,25 @@ services:
       - HADOOP_ROLE=datanode
       - CLUSTER_NAME=gaza-youtube-analytics
     ports:
-      - "9865:9864"   # DataNode Web UI
+      - "9865:9864"
     volumes:
       - datanode2_data:/hadoop/dfs/data
-      - ./hadoop-configs:/opt/hadoop/etc/hadoop
-      - ./start-hadoop.sh:/start-hadoop.sh
+      - ./hadoop-configs/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml:ro
+      - ./hadoop-configs/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./hadoop-configs/mapred-site.xml:/usr/local/hadoop/etc/hadoop/mapred-site.xml:ro
+      - ./hadoop-configs/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml:ro
+      - ./start-hadoop.sh:/start-hadoop.sh:ro
     networks:
       - hadoop-network
     depends_on:
-      - namenode
+      namenode:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "jps | grep -q DataNode"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
     command: ["/bin/bash", "/start-hadoop.sh"]
 
   datanode3:
@@ -91,15 +94,25 @@ services:
       - HADOOP_ROLE=datanode
       - CLUSTER_NAME=gaza-youtube-analytics
     ports:
-      - "9866:9864"   # DataNode Web UI
+      - "9866:9864"
     volumes:
       - datanode3_data:/hadoop/dfs/data
-      - ./hadoop-configs:/opt/hadoop/etc/hadoop
-      - ./start-hadoop.sh:/start-hadoop.sh
+      - ./hadoop-configs/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml:ro
+      - ./hadoop-configs/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./hadoop-configs/mapred-site.xml:/usr/local/hadoop/etc/hadoop/mapred-site.xml:ro
+      - ./hadoop-configs/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml:ro
+      - ./start-hadoop.sh:/start-hadoop.sh:ro
     networks:
       - hadoop-network
     depends_on:
-      - namenode
+      namenode:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "jps | grep -q DataNode"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
     command: ["/bin/bash", "/start-hadoop.sh"]
 
   datanode4:
@@ -110,34 +123,80 @@ services:
       - HADOOP_ROLE=datanode
       - CLUSTER_NAME=gaza-youtube-analytics
     ports:
-      - "9867:9864"   # DataNode Web UI
+      - "9867:9864"
     volumes:
       - datanode4_data:/hadoop/dfs/data
-      - ./hadoop-configs:/opt/hadoop/etc/hadoop
-      - ./start-hadoop.sh:/start-hadoop.sh
+      - ./hadoop-configs/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml:ro
+      - ./hadoop-configs/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./hadoop-configs/mapred-site.xml:/usr/local/hadoop/etc/hadoop/mapred-site.xml:ro
+      - ./hadoop-configs/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml:ro
+      - ./start-hadoop.sh:/start-hadoop.sh:ro
     networks:
       - hadoop-network
     depends_on:
-      - namenode
+      namenode:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "jps | grep -q DataNode"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+    command: ["/bin/bash", "/start-hadoop.sh"]
+
+  secondarynamenode:
+    image: razer99/hadoop-cluster-mouin-boubakri:latest
+    container_name: secondarynamenode
+    hostname: secondarynamenode
+    environment:
+      - HADOOP_ROLE=secondarynamenode
+      - CLUSTER_NAME=gaza-youtube-analytics
+    ports:
+      - "9868:9868"
+    volumes:
+      - secondarynamenode_data:/hadoop/dfs/namesecondary
+      - ./hadoop-configs/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml:ro
+      - ./hadoop-configs/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./hadoop-configs/mapred-site.xml:/usr/local/hadoop/etc/hadoop/mapred-site.xml:ro
+      - ./hadoop-configs/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml:ro
+      - ./start-hadoop.sh:/start-hadoop.sh:ro
+    networks:
+      - hadoop-network
+    depends_on:
+      namenode:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "jps | grep -q SecondaryNameNode"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
     command: ["/bin/bash", "/start-hadoop.sh"]
 
   spark-master:
     image: apache/spark-py:v3.4.0
     container_name: spark-master
     hostname: spark-master
+    user: root
     environment:
       - SPARK_MODE=master
       - SPARK_MASTER_HOST=spark-master
       - SPARK_MASTER_PORT=7077
       - SPARK_MASTER_WEBUI_PORT=8080
     ports:
-      - "8080:8080"   # Spark Master Web UI
-      - "7077:7077"   # Spark Master
+      - "8080:8080"
+      - "7077:7077"
     volumes:
-      - ./pyspark_gaza.py:/opt/pyspark_gaza.py
+      - ./pyspark_gaza.py:/opt/pyspark_gaza.py:ro
       - spark_master_data:/opt/spark-data
     networks:
       - hadoop-network
+    healthcheck:
+      test: ["CMD", "bash", "-c", "pgrep -f org.apache.spark.deploy.master.Master || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     entrypoint: ["/opt/spark/bin/spark-class"]
     command: ["org.apache.spark.deploy.master.Master"]
 
@@ -145,19 +204,27 @@ services:
     image: apache/spark-py:v3.4.0
     container_name: spark-worker-1
     hostname: spark-worker-1
+    user: root
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_WORKER_MEMORY=4G
       - SPARK_WORKER_CORES=2
     ports:
-      - "8081:8081"   # Spark Worker Web UI
+      - "8081:8081"
     volumes:
       - spark_worker1_data:/opt/spark-data
     networks:
       - hadoop-network
     depends_on:
-      - spark-master
+      spark-master:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "pgrep -f org.apache.spark.deploy.worker.Worker || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     entrypoint: ["/opt/spark/bin/spark-class"]
     command: ["org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077"]
 
@@ -165,45 +232,41 @@ services:
     image: apache/spark-py:v3.4.0
     container_name: spark-worker-2
     hostname: spark-worker-2
+    user: root
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_WORKER_MEMORY=4G
       - SPARK_WORKER_CORES=2
     ports:
-      - "8082:8081"   # Spark Worker Web UI
+      - "8082:8081"
     volumes:
       - spark_worker2_data:/opt/spark-data
     networks:
       - hadoop-network
     depends_on:
-      - spark-master
+      spark-master:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "pgrep -f org.apache.spark.deploy.worker.Worker || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     entrypoint: ["/opt/spark/bin/spark-class"]
     command: ["org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077"]
 
 networks:
   hadoop-network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.25.0.0/16
 
 volumes:
   namenode_data:
-    driver: local
   secondarynamenode_data:
-    driver: local
   datanode1_data:
-    driver: local
   datanode2_data:
-    driver: local
   datanode3_data:
-    driver: local
   datanode4_data:
-    driver: local
   spark_master_data:
-    driver: local
   spark_worker1_data:
-    driver: local
   spark_worker2_data:
-    driver: local

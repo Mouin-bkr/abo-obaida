@@ -1,0 +1,44 @@
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker volumes (local development)
+# Note: we keep docker-compose.yml tracked
+
+# Sensitive data
+.env
+*.key
+*_apikey.txt
+credentials.json
+
+# Large data files (optional - decide based on project needs)
+# *.csv
+# *.json
+# *.jsonl

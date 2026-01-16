@@ -96,13 +96,18 @@ if [ "$ROLE" = "namenode" ]; then
 elif [ "$ROLE" = "secondarynamenode" ]; then
     echo "🔄 Initializing Secondary NameNode..."
     
-    # Wait for NameNode to be available
+    # Wait for NameNode to be available (without nc)
     echo "⏳ Waiting for NameNode to be available..."
-    while ! nc -z namenode 9870; do
-        echo "   Waiting for NameNode..."
-        sleep 3
+    MAX_WAIT=120
+    WAITED=0
+    while [ $WAITED -lt $MAX_WAIT ]; do
+        if timeout 2 bash -c "cat < /dev/null > /dev/tcp/namenode/9870" 2>/dev/null; then
+            echo "✅ NameNode is available"
+            break
+        fi
+        sleep 5
+        WAITED=$((WAITED + 5))
     done
-    echo "✅ NameNode is available"
     
     # Start Secondary NameNode
     echo "🚀 Starting HDFS Secondary NameNode..."
@@ -121,13 +126,18 @@ elif [ "$ROLE" = "secondarynamenode" ]; then
 elif [ "$ROLE" = "datanode" ]; then
     echo "💾 Initializing DataNode..."
     
-    # Wait for NameNode to be available
+    # Wait for NameNode to be available (without nc)
     echo "⏳ Waiting for NameNode to be available..."
-    while ! nc -z namenode 9870; do
-        echo "   Waiting for NameNode..."
-        sleep 3
+    MAX_WAIT=120
+    WAITED=0
+    while [ $WAITED -lt $MAX_WAIT ]; do
+        if timeout 2 bash -c "cat < /dev/null > /dev/tcp/namenode/9870" 2>/dev/null; then
+            echo "✅ NameNode is available"
+            break
+        fi
+        sleep 5
+        WAITED=$((WAITED + 5))
     done
-    echo "✅ NameNode is available"
     
     # Additional wait to ensure NameNode is fully ready
     sleep 5

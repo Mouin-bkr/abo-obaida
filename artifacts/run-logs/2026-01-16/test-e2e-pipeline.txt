@@ -1,0 +1,13 @@
+╔══════════════════════════════════════════════════════════════════╗
+║     Gaza YouTube Analytics - End-to-End Pipeline Test           ║
+╚══════════════════════════════════════════════════════════════════╝
+
+1️⃣  Checking cluster health...
+   ✅ HDFS accessible
+   ✅ Spark master running
+
+2️⃣  Creating HDFS directories...
+   ✅ Directories created
+
+3️⃣  Uploading data to HDFS...
+put: `gaza_videos.jsonl': No such file or directory

@@ -1,0 +1,55 @@
+=== HDFS Replication Test ===
+1. Creating test file...
+docker exec namenode bash -c 'echo "Testing replication with 575 video records" > /tmp/test_replication.txt'
+docker exec namenode hdfs dfs -put -f /tmp/test_replication.txt /tmp/
+2. Checking block locations and replication...
+docker exec namenode hdfs fsck /tmp/test_replication.txt -files -blocks -locations
+Connecting to namenode via http://namenode:9870/fsck?ugi=root&files=1&blocks=1&locations=1&path=%2Ftmp%2Ftest_replication.txt
+FSCK started by root (auth:SIMPLE) from /172.18.0.2 for path /tmp/test_replication.txt at Fri Jan 16 20:59:49 GMT 2026
+
+/tmp/test_replication.txt 43 bytes, replicated: replication=1, 1 block(s):  OK
+0. BP-1220359487-172.18.0.3-1768595224403:blk_1073741828_1004 len=43 Live_repl=1  [DatanodeInfoWithStorage[172.18.0.3:9866,DS-7a5ec1df-2848-427d-b4df-a340da5111b4,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:	4
+ Number of racks:		1
+ Total dirs:			0
+ Total symlinks:		0
+
+Replicated Blocks:
+ Total size:	43 B
+ Total files:	1
+ Total blocks (validated):	1 (avg. block size 43 B)
+ Minimally replicated blocks:	1 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	0 (0.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	1
+ Average block replication:	1.0
+ Missing blocks:		0
+ Corrupt blocks:		0
+ Missing replicas:		0 (0.0 %)
+ Blocks queued for replication:	0
+
+Erasure Coded Block Groups:
+ Total size:	0 B
+ Total files:	0
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+ Blocks queued for replication:	0
+FSCK ended at Fri Jan 16 20:59:49 GMT 2026 in 19 milliseconds
+
+
+The filesystem under path '/tmp/test_replication.txt' is HEALTHY
+3. Cleanup...
+docker exec namenode hdfs dfs -rm /tmp/test_replication.txt
+Deleted /tmp/test_replication.txt
+✅ Replication test complete!
